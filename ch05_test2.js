@@ -64,3 +64,6 @@ server.on('request',function(req,res){
 server.on('close',function(){
   console.log('종료');
 });
+
+
+//접속 url : http://ip:port
