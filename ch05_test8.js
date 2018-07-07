@@ -1,3 +1,6 @@
+/**
+http 모듈에서 POST 방식으로 값 받아오는 방법
+*/
 var http = require('http');
 
 var options = {
