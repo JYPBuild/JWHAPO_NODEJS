@@ -6,10 +6,13 @@
 var http = require('http');
 var server = http.createServer(); //웹 서버 객체를 만듬.
 
+// 파일을 다루기 위한 fs모듈
+var fs = require('fs');
+
 //웹 서버를 시작하고 3000번 포트 설정
 var port = 3000;
 //host IP 지정
-var host = '14.39.185.5';
+var host = '211.218.29.70';
 
 /*
 * 메소드 이름 : 설명
@@ -47,18 +50,42 @@ server.on('request',function(req,res){
   * write(chunk,encoding,callback) : 응답 본문데이터를 만든다.
   * end(data,encoding,callback) : 클라이언트로 응답을 전송한다. 파라미터에 데이터가 들어있다면 데이터를 포함시켜 응답을 전송한다.
   */
-  res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
-  res.write("<!DOCTYPE html>                                ");
-  res.write("<html>                                         ");
-  res.write(" <head>                                        ");
-  res.write("   <title>JYP Project 180529</title>           ");
-  res.write(" </head>                                       ");
-  res.write(" <body>                                        ");
-  res.write("   <h1> JYP Project in DooJung City </h1>      ");
-  res.write(" </body>                                       ");
-  res.write("</html>                                        ");
+  // res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
+  // res.write("<!DOCTYPE html>                                ");
+  // res.write("<html>                                         ");
+  // res.write(" <head>                                        ");
+  // res.write("   <title>JYP Project 180529</title>           ");
+  // res.write(" </head>                                       ");
+  // res.write(" <body>                                        ");
+  // res.write("   <h1> Her name is Jorja Smith </h1>          ");
+  // res.write(" </body>                                       ");
+  // res.write("</html>                                        ");
 
-  res.end();
+  var filename = 'jorja.jpeg';
+  var infile = fs.createReadStream(filename, {flags: 'r'});
+  var filelength = 0;
+  var curlength = 0;
+
+  fs.stat(filename, function(err, stats){
+    filelength = stats.size;
+  });
+
+  res.writeHead(200, {"Content-Type": "image/jpeg"});
+
+  infile.on('readable', function(){
+    var chunk;
+    while(null != (chunk = infile.read())){
+      console.log('일어들인 데이터 크기 : %d 바이트', chunk.length);
+      curlength += chunk.length;
+      res.write(chunk, 'utf8',function(err){
+        console.log('파일 부분 쓰기완료 : %d, 파일 크기:%d', curlength, filelength);
+        if(curlength >= filelength){
+          res.end();
+        }
+      });
+    }
+  });
+
 });
 
 server.on('close',function(){
