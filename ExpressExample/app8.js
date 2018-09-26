@@ -20,6 +20,11 @@ app.use(bodyParser.json());
 
 app.use(static(path.join(__dirname, 'public')));
 
+//등록되지 않은 패스에 대해 페이지 오류 응답.
+app.all('*', function(req, res){
+  res.status(404).send('<h1> ERROR - CAN NOT FIND PAGE. <h1>');
+});
+
 //라우터 객체 참조
 var router = express.Router();
 
