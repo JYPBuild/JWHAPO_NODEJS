@@ -58,47 +58,82 @@ function connectDB(){
   //데이터베이스 연결정보
   var databaseUrl = 'mongodb://localhost:27017/local';
 
-  mongoose.Promise = global.Promise;
-  mongoose.connect(databaseUrl,{ useNewUrlParser: true });
+  //데이터베이스 연결
+  mongoose.connect(databaseUrl);
   database = mongoose.connection;
 
-  database.on('error', console.error.bind(console, 'mongoose connection error.'));
+  database.on('error',console.error.bind(console, 'mongoose connection error.'));
   database.on('open', function(){
-    console.log('데이터 베이스에 연결되었습니다. '+databaseUrl);
+    console.log('데이터베이스에 연결되었습니다. : '+databaseUrl);
 
-    //스키마 정의
-    UserSchema = mongoose.Schema({
-      id: {type:String, required:true, unique:true},
-      password: {type:String, required:true},
-      name:{type:String,index: 'hashed'},
-      age:{type:Number, 'default' :-1},
-      created_at:{type:Date, index:{unique:false},'default' : Date.now},
-      updated_at:{type:Date, index:{unique:false},'default' : Date.now}
-    });
+    //user 스키마 및 모델 객체 생성
+    createUserSchema();
 
-    //스키마에 static 메소드 추가
-    UserSchema.static('findById', function(id, callback){
-      return this.find({id : id}, callback);
-    });
+    //test 진행함
+    doTest();
 
-    UserSchema.static('findAll', function(callback){
-      return this.find({}, callback);
-    });
-
-    console.log('UserSchema 정의함.');
-
-    //UserModel 모델 정의
-    UserModel = mongoose.model("users2", UserSchema);
-    console.log('UserModel 정의함.');
   });
 
-  database.on('disconnected', function(){
-    console.log('연결이 끊어졌습니다. 5초 후 다시 연결합니다.');
-    setInterval(connectDB, 5000);
-  });
+  database.on('disconnected', connectDB);
 }
 
+//user 스키마 및 모델 객체 생성
+function createUserSchema(){
+  //스키마 정의
+  //password를 hashed_password로 변경, default 속성 모두 추가, salt 속석 추가
+  UserSchema = mongoose.Schema({
+    id: {type:String, required:true, unique:true},
+    name:{type:String,index: 'hashed', 'default':''},
+    age:{type:Number, 'default' :-1},
+    created_at:{type:Date, index:{unique:false},'default' : Date.now},
+    updated_at:{type:Date, index:{unique:false},'default' : Date.now}
+  });
 
+  UserSchema
+    .virtual('info')
+    .set(function(info){
+      var splitted = info.split(' ');
+      this.id =  splitted[0];
+      this.name = splitted[1];
+      console.log('virtual info 설정함 : %s, %s', this.id, this.name);
+    })
+    .get(function(){
+      return this.id + ' ' + this.name;
+    });
+
+  console.log('UserSchema 정의함.');
+
+  UserModel = mongoose.model("user4", UserSchema);
+  console.log('UserModel 정의함.');
+}
+
+function doTest(){
+  //UserModel 인스턴스 생성
+  //id, name 속성은 할당하지 않고 info 속성만 할당함
+  var user = new UserModel({"info" : 'test01 소녀시대'});
+
+  //save()로 저장
+  user.save(function(err){
+    if(err) {throw err;}
+
+    console.log('사용자 데이터 추가함.');
+
+    findAll();
+  });
+
+  console.log('info 속성에 값 할당함');
+  console.log('id : %s, name : %s', user.id, user.name);
+}
+
+function findAll(){
+  UserModel.find({}, function(err, results){
+    if(err){throw err;}
+
+    if(results){
+      console.log('조회된 user 문서 객체 #0 -> id :%s, name : %s', results[0]._doc.id, results[0]._doc.name);
+    }
+  });
+}
 
 //사용자를 인증하는 함수
 var authUser = function(database, id, password, callback){
