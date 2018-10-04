@@ -21,9 +21,13 @@ var expressSession = require('express-session');
 
 var user = require('./routes/user');
 
+var config = require('./config');
+
 //Express 객체생성
 var app = express();
 
+//=====서버 변수 설정 및 static으로 [public] 폴더 설정  ====/
+console.log('config.server_port : %d', config.server_port);
 //기본 속성 설정
 app.set('port', process.env.PORT||3000);
 
