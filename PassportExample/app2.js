@@ -26,7 +26,7 @@ var route_loader = require('./routes/route_loader');
 //======Passport 사용 ==================//
 var passport = require('passport'); //사용자 인증 처리에 필요한 기본 기능 제공
 var flash = require('connect-flash'); // 요청객체에 메세지를 넣어 둘 수 있는 기능 제공
-
+var session = require('express-session');
 //Express 객체생성
 var app = express();
 
@@ -50,6 +50,7 @@ console.log('뷰 엔진이 ejs로 설정되었습니다.');
 app.use(cookieParser());
 
 //=======================passport 사용 설정 ================//
+app.use(session({ secret: 'anything' }));
 app.use(passport.initialize()); // 초기화
 app.use(passport.session()); // 로그인 세션 유지
 app.use(flash());
@@ -120,7 +121,7 @@ app.get('/profile',function(req,res){
 });
 
 //로그아웃
-app.get('/logout', function(req,res){
+app.get('/logout', function(req, res){
   console.log('/logout 패스 요청됨.');
   req.logout();
   res.redirect('/');
@@ -178,6 +179,7 @@ passport.use('local-login', new LocalStrategy({
 
     // 정상인 경우
     console.log('계정과 비밀번호가 일치함.');
+    console.log(user);
     return done(null, user);
   });
 
