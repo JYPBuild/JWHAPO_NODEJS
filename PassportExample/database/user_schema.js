@@ -5,8 +5,8 @@ var Schema = {};
 
 Schema.createSchema = function(mongoose){
   var UserSchema = mongoose.Schema({
-    email: {type:String, required:true, unique:true, 'default' : ' '},
-    hashed_password : {type:String, required:true, 'default' : ' '},
+    email: {type:String, 'default' : ''},
+    hashed_password : {type:String, required:true, 'default' : ''},
     name:{type:String,index: 'hashed', 'default':''},
     salt : {type:String,requred:true},
     created_at:{type:Date, index:{unique:false},'default' : Date.now},
