@@ -20,7 +20,7 @@ var expressErrorHandler = require('express-error-handler');
 var expressSession = require('express-session');
 
 var database = require('./database/database');
-var config = require('./config');
+var config = require('./config/config');
 var route_loader = require('./routes/route_loader');
 
 //======Passport 사용 ==================//
