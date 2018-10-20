@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width = device-width, height = device-height, initial-scale=1">
-  <title>echo</title>
+  <title>echo_error</title>
 
   <script src="./jquery-3.3.1.min.js"></script>
   <script src="./jquery.jsonrpc.js"></script>
@@ -17,10 +17,9 @@
 
       $('#requestButton').click(function(){
         var message = $('#messageInput').val();
-        var method = 'echo';
+        var method = 'echo_error';
 
         $.jsonRPC.request(method,{
-          id : 1001,
           params : [message],
           success : function(data){
             println('정상 응답을 받았습니다.');
@@ -30,7 +29,7 @@
           error : function(data){
             println('오류 응답을 받았습니다.');
             console.dir(data);
-            println(data.error.message);
+            println(data.error.code + ', ' + data.error.message);
           }
         });
         println('[' + method + '] method로 요청을 보냈습니다.');
