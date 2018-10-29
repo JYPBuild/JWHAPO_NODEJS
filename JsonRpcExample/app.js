@@ -102,4 +102,6 @@ http.createServer(app).listen(app.get('port'), function(){
 
   //데이터 베이스 연결
   database.init(app,config);
+
+  global.database = database;
 });
