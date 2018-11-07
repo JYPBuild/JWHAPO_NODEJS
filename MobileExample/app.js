@@ -27,6 +27,7 @@ var route_loader = require('./routes/route_loader');
 var passport = require('passport'); //사용자 인증 처리에 필요한 기본 기능 제공
 var flash = require('connect-flash'); // 요청객체에 메세지를 넣어 둘 수 있는 기능 제공
 var session = require('express-session');
+
 //Express 객체생성
 var app = express();
 
