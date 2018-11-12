@@ -1,8 +1,11 @@
 {
-  "name": "moduleexample",
+  "name": "boardExample",
   "version": "1.0.0",
-  "description": "",
+  "description": "first",
   "main": "app.js",
+  "engines" : {
+    "node":"8.11.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
