@@ -31,7 +31,7 @@ var session = require('express-session');
 var app = express();
 
 //기본 속성 설정
-app.set('port', config.server_port||process.env.PORT);
+app.set('port', process.env.PORT||config.server_port);
 
 //body-parser를 사용해 application/x-www-form-urlencoded 파싱
 app.use(bodyParser.urlencoded({extended: false}));
